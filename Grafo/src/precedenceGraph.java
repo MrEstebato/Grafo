@@ -1,3 +1,4 @@
+import java.util.Iterator;
 import java.util.LinkedList;
 public class precedenceGraph {
     Boolean orientation;
@@ -5,8 +6,21 @@ public class precedenceGraph {
     LinkedList<Edge> edges = new LinkedList<Edge>();
 
     public int getDegree(){
-        //TODO complete function
-        return 0;
+        //Handle case graph has no nodes (returns -1)
+        if(nodes.isEmpty()){
+            return -1;
+        }
+
+        Iterator<Node> nodeIterator = nodes.iterator();
+        int maxNodeDegree = 0;
+        while(nodeIterator.hasNext()){
+            Node currentNode = nodeIterator.next();
+            if(maxNodeDegree < currentNode.getDegree()){
+                maxNodeDegree = currentNode.getDegree();
+            }
+        }
+        //In case that graph has one single node, this should return 0
+        return maxNodeDegree;
     }
 
     public boolean isOriented(){
