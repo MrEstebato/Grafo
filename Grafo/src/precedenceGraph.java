@@ -11,6 +11,10 @@ public class precedenceGraph {
     LinkedList<Node> nodes = new LinkedList<Node>();
     LinkedList<Edge> edges = new LinkedList<Edge>();
 
+    Node root;
+
+    List<List<Integer>> adjacencyMatrix = new ArrayList<>();
+
     public int getDegree() {
         // Handle case graph has no nodes (returns -1)
         if (nodes.isEmpty()) {
@@ -35,7 +39,6 @@ public class precedenceGraph {
 
     public void graphReader() {
         String filePath = "Grafo/src/Grafo.txt";
-        List<List<Integer>> adjacencyMatrix = new ArrayList<>();
 
         try (FileReader fileReader = new FileReader(filePath);
                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -71,18 +74,10 @@ public class precedenceGraph {
     }
 
     public void addNode(Node node) {
-        // TODO complete function
-    }
 
-    public void deleteNode(Node node) {
-        // TODO complete function
     }
 
     public void addEdge(Node node1, Node node2) {
-        // TODO complete function
-    }
-
-    public void deleteEdge(Node node1, Node node2) {
         // TODO complete function
     }
 
