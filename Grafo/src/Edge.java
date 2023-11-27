@@ -1,12 +1,12 @@
 public class Edge {
-    Node initialVertex;
+    //Node initialVertex;
     Node finalVertex;
     String label;
     int multiplicity;
 
-    public Node getInitialVertex() {
-        return initialVertex;
-    }
+    //public Node getInitialVertex() {
+    //    return initialVertex;
+    //}
 
     public Node getFinalVertex() {
         return finalVertex;
