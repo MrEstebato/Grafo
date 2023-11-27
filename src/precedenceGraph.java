@@ -9,36 +9,37 @@ import java.util.List;
 public class precedenceGraph {
     // Boolean orientation;
     LinkedList<Node> nodes = new LinkedList<Node>();
-    LinkedList<Edge> edges = new LinkedList<Edge>();
 
     Node root;
 
     List<List<Integer>> adjacencyMatrix = new ArrayList<>();
 
-    public int getDegree() {
-        // Handle case graph has no nodes (returns -1)
-        if (nodes.isEmpty()) {
-            return -1;
-        }
-
-        Iterator<Node> nodeIterator = nodes.iterator();
-        int maxNodeDegree = 0;
-        while (nodeIterator.hasNext()) {
-            Node currentNode = nodeIterator.next();
-            if (maxNodeDegree < currentNode.getDegree()) {
-                maxNodeDegree = currentNode.getDegree();
-            }
-        }
-        // In case that graph has one single node, this should return 0
-        return maxNodeDegree;
-    }
+    /*
+     * public int getDegree() {
+     * // Handle case graph has no nodes (returns -1)
+     * if (nodes.isEmpty()) {
+     * return -1;
+     * }
+     * 
+     * Iterator<Node> nodeIterator = nodes.iterator();
+     * int maxNodeDegree = 0;
+     * while (nodeIterator.hasNext()) {
+     * Node currentNode = nodeIterator.next();
+     * if (maxNodeDegree < currentNode.getDegree()) {
+     * maxNodeDegree = currentNode.getDegree();
+     * }
+     * }
+     * // In case that graph has one single node, this should return 0
+     * return maxNodeDegree;
+     * }
+     */
 
     // public boolean isOriented(){
     // return orientation;
     // }
 
     public void graphReader() {
-        String filePath = "Grafo/src/Grafo.txt";
+        String filePath = "src/Grafo.txt";
 
         try (FileReader fileReader = new FileReader(filePath);
                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
