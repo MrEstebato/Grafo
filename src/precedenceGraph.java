@@ -6,24 +6,44 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class precedenceGraph {
-    // Boolean orientation;
-    LinkedList<Node> nodes = new LinkedList<Node>();
+    private LinkedList<Node> nodes;
+    private List<List<Integer>> adjacencyMatrix;
+    private List<Node> flows;
+    private String filePath;
 
-    Node root;
+    private Node root;
 
-    List<List<Integer>> adjacencyMatrix = new ArrayList<>();
+    public precedenceGraph(String filePath) {
+        this.filePath = filePath;
+        adjacencyMatrix = new ArrayList<>();
+        nodes = new LinkedList<Node>();
+        flows = new ArrayList<>();
+
+        graphReader(filePath);
+
+        for (int i = 0; i < adjacencyMatrix.get(0).size(); i++) {
+            Node addedNode = new Node("S" + (i + 1));
+            addNode(addedNode);
+        }
+
+        root = nodes.get(0);
+
+        for (int j = 0; j < nodes.size(); j++) {
+            for (int k = 0; k < adjacencyMatrix.get(0).size(); k++) {
+                if (adjacencyMatrix.get(j).get(k) == 1) {
+                    addEdge(nodes.get(j), nodes.get(k));
+                }
+            }
+        }
+    }
 
     public void graphReader(String filePath) {
         try (FileReader fileReader = new FileReader(filePath);
                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-
                 String[] characters = line.split(" ");
-
-                List<Integer> row = new ArrayList<>();
-
+                ArrayList<Integer> row = new ArrayList<>();
                 for (String character : characters) {
                     if (!character.trim().isEmpty()) {
                         row.add(Integer.parseInt(character));
@@ -34,49 +54,41 @@ public class precedenceGraph {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (List<Integer> row : adjacencyMatrix) {
-            for (Integer value : row) {
-                System.out.print(value + " ");
+    }
+
+    public void showValidFlows() {
+        getValidFlows(this, root, flows);
+    }
+
+    public void getValidFlows(precedenceGraph grafo, Node nodoActual, List<Node> caminoActual) {
+        caminoActual.add(nodoActual);
+
+        if (nodoActual.children.isEmpty()) {
+
+            for (Node node : caminoActual) {
+                System.out.print(node.getData() + "; ");
             }
             System.out.println();
+        } else {
+            for (Node hijo : nodoActual.children) {
+                getValidFlows(grafo, hijo, new ArrayList<>(caminoActual));
+            }
         }
     }
 
-    public boolean isSimple() {
-        // TODO complete function
-        return true;
-    }
-
     public void addNode(Node node) {
-
+        nodes.add(node);
     }
 
     public void addEdge(Node node1, Node node2) {
-        // TODO complete function
+        node1.addChild(node2);
     }
 
-    public boolean areAdyacent(Node node1, Node node2) {
-        // TODO complete function
-        return true;
-    }
-
-    public int getNodeDegree() {
-        // TODO complete function
-        return 0;
-    }
-
-    public int getInNodeDegree() {
-        // TODO complete function
-        return 0;
-    }
-
-    public int getOutNodeDegree() {
-        // TODO complete function
-        return 0;
+    public Node getRoot() {
+        return root;
     }
 
     private class Node {
-        boolean isRoot;
         String data;
 
         ArrayList<Node> children;
