@@ -9,12 +9,10 @@ public class precedenceGraph {
     private LinkedList<Node> nodes;
     private List<List<Integer>> adjacencyMatrix;
     private List<Node> flows;
-    private String filePath;
 
     private Node root;
 
     public precedenceGraph(String filePath) {
-        this.filePath = filePath;
         adjacencyMatrix = new ArrayList<>();
         nodes = new LinkedList<Node>();
         flows = new ArrayList<>();
