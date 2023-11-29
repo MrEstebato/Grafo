@@ -33,9 +33,20 @@ public class precedenceGraph {
                 }
             }
         }
+
+        for (int j = 0; j < nodes.size(); j++) {
+            int count = 0;
+            for (int i = 0; i < nodes.size(); i++) {
+                count += adjacencyMatrix.get(i).get(j);
+            }
+            if (count == 0) { 
+                root = nodes.get(j);
+                break;
+            }
+        }
     }
 
-    public void graphReader(String filePath) {
+    private void graphReader(String filePath) {
         try (FileReader fileReader = new FileReader(filePath);
                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             String line;
@@ -58,7 +69,7 @@ public class precedenceGraph {
         getValidFlows(this, root, flows);
     }
 
-    public void getValidFlows(precedenceGraph grafo, Node nodoActual, List<Node> caminoActual) {
+    private void getValidFlows(precedenceGraph grafo, Node nodoActual, List<Node> caminoActual) {
         caminoActual.add(nodoActual);
 
         if (nodoActual.children.isEmpty()) {
