@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,30 +12,6 @@ public class precedenceGraph {
     Node root;
 
     List<List<Integer>> adjacencyMatrix = new ArrayList<>();
-
-    /*
-     * public int getDegree() {
-     * // Handle case graph has no nodes (returns -1)
-     * if (nodes.isEmpty()) {
-     * return -1;
-     * }
-     * 
-     * Iterator<Node> nodeIterator = nodes.iterator();
-     * int maxNodeDegree = 0;
-     * while (nodeIterator.hasNext()) {
-     * Node currentNode = nodeIterator.next();
-     * if (maxNodeDegree < currentNode.getDegree()) {
-     * maxNodeDegree = currentNode.getDegree();
-     * }
-     * }
-     * // In case that graph has one single node, this should return 0
-     * return maxNodeDegree;
-     * }
-     */
-
-    // public boolean isOriented(){
-    // return orientation;
-    // }
 
     public void graphReader(String filePath) {
         try (FileReader fileReader = new FileReader(filePath);
@@ -98,5 +73,29 @@ public class precedenceGraph {
     public int getOutNodeDegree() {
         // TODO complete function
         return 0;
+    }
+
+    private class Node {
+        boolean isRoot;
+        String data;
+
+        ArrayList<Node> children;
+
+        public Node(String data) {
+            this.data = data;
+            this.children = new ArrayList<>();
+        }
+
+        public void addChild(Node child) {
+            children.add(child);
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        public String getData() {
+            return data;
+        }
     }
 }
