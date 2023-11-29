@@ -12,7 +12,7 @@ public class precedenceGraph {
 
     Node root;
 
-    List<List<Integer>> adjacencyMatrix = new ArrayList<>();
+    //List<List<Integer>> adjacencyMatrix = new ArrayList<>();
 
     /*
      * public int getDegree() {
@@ -38,46 +38,17 @@ public class precedenceGraph {
     // return orientation;
     // }
 
-    public void graphReader(String filePath) {
-        try (FileReader fileReader = new FileReader(filePath);
-                BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-
-                String[] characters = line.split(" ");
-
-                List<Integer> row = new ArrayList<>();
-
-                for (String character : characters) {
-                    if (!character.trim().isEmpty()) {
-                        row.add(Integer.parseInt(character));
-                    }
-                }
-                adjacencyMatrix.add(row);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (List<Integer> row : adjacencyMatrix) {
-            for (Integer value : row) {
-                System.out.print(value + " ");
-            }
-            System.out.println();
-        }
-    }
-
     public boolean isSimple() {
         // TODO complete function
         return true;
     }
 
     public void addNode(Node node) {
-
+        nodes.add(node);
     }
 
     public void addEdge(Node node1, Node node2) {
-        // TODO complete function
+        node1.children.add(node2);
     }
 
     public boolean areAdyacent(Node node1, Node node2) {
@@ -98,5 +69,9 @@ public class precedenceGraph {
     public int getOutNodeDegree() {
         // TODO complete function
         return 0;
+    }
+
+    public int getTotalNodes(){
+        return nodes.size();
     }
 }
