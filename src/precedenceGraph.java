@@ -38,9 +38,7 @@ public class precedenceGraph {
     // return orientation;
     // }
 
-    public void graphReader() {
-        String filePath = "src/Grafo.txt";
-
+    public void graphReader(String filePath) {
         try (FileReader fileReader = new FileReader(filePath);
                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
