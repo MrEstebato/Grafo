@@ -2,42 +2,47 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Clase que representa un grafo de precedencia y proporciona métodos para encontrar flujos válidos.
+ * Clase que representa un grafo de precedencia.
  */
 public class PrecedenceGraph {
-
-    // Listas y nodos para representar el grafo.
     private LinkedList<Node> nodes;
     private List<List<Integer>> adjacencyMatrix;
-    private ArrayList<Node> flows;
-
-    // Nodo raíz del grafo.
+    private List<Node> flows;
     private Node root;
+    private Node last;
+    private HashMap<String, ArrayList<Node>> forks = new HashMap<>();
+    private HashMap<String, Node> thaNodes;
 
     /**
      * Constructor de la clase PrecedenceGraph.
      *
-     * @param filePath Ruta del archivo que contiene la información para construir el grafo.
+     * @param filePath Ruta del archivo que contiene la matriz de adyacencia.
      */
     public PrecedenceGraph(String filePath) {
+        // Inicialización de estructuras de datos.
         adjacencyMatrix = new ArrayList<>();
-        nodes = new LinkedList<Node>();
+        nodes = new LinkedList<>();
         flows = new ArrayList<>();
+        thaNodes = new HashMap<String, Node>();
 
-        // Leer y construir el grafo desde el archivo.
+        // Lectura de la matriz de adyacencia desde el archivo.
         graphReader(filePath);
 
-        // Crear nodos iniciales y establecer la raíz.
+        // Creación de nodos y asignación al mapa de nodos 'thaNodes'.
         for (int i = 0; i < adjacencyMatrix.get(0).size(); i++) {
             Node addedNode = new Node("S" + (i + 1));
+            thaNodes.put("S" + (i + 1), addedNode);
             addNode(addedNode);
         }
 
-        // Establecer conexiones entre nodos según la matriz de adyacencia.
+        root = nodes.get(0);
+
+        // Inserción de nodos en el grafo.
         for (int j = 0; j < nodes.size(); j++) {
             for (int k = 0; k < adjacencyMatrix.get(0).size(); k++) {
                 if (adjacencyMatrix.get(j).get(k) == 1) {
@@ -46,7 +51,7 @@ public class PrecedenceGraph {
             }
         }
 
-        // Encontrar la raíz del grafo.
+        // Obtención del nodo raíz y del último nodo.
         for (int j = 0; j < nodes.size(); j++) {
             int count = 0;
             for (int i = 0; i < nodes.size(); i++) {
@@ -57,12 +62,23 @@ public class PrecedenceGraph {
                 break;
             }
         }
+
+        for (int j = 0; j < nodes.size(); j++) {
+            int count = 0;
+            for (int i = 0; i < nodes.size(); i++) {
+                count += adjacencyMatrix.get(j).get(i);
+            }
+            if (count == 0) {
+                last = nodes.get(j);
+                break;
+            }
+        }
     }
 
     /**
-     * Lee la información del grafo desde un archivo y construye la matriz de adyacencia.
+     * Método para leer la matriz de adyacencia desde un archivo.
      *
-     * @param filePath Ruta del archivo que contiene la información del grafo.
+     * @param filePath Ruta del archivo.
      */
     private void graphReader(String filePath) {
         try (FileReader fileReader = new FileReader(filePath);
@@ -84,62 +100,222 @@ public class PrecedenceGraph {
     }
 
     /**
-     * Muestra los flujos válidos en el grafo.
+     * Método para mostrar los flujos válidos en el grafo.
      */
     public void showValidFlows() {
         getValidFlows(this, root, flows);
     }
 
     /**
-     * Recursivamente encuentra y muestra los flujos válidos en el grafo.
+     * Método recursivo para obtener los flujos válidos en el grafo.
      *
-     * @param grafo       Objeto de tipo PrecedenceGraph que representa el grafo.
-     * @param currentNode  Nodo actual durante la recursión.
-     * @param currentFlow Lista que representa el camino actual durante la recursión.
+     * @param grafo        Grafo actual.
+     * @param nodoActual   Nodo actual.
+     * @param caminoActual Lista de nodos en el camino actual.
      */
-    private void getValidFlows(PrecedenceGraph grafo, Node currentNode, ArrayList<Node> currentFlow) {
-        currentFlow.add(currentNode);
+    private void getValidFlows(PrecedenceGraph grafo, Node nodoActual, List<Node> caminoActual) {
+        caminoActual.add(nodoActual);
 
-        if (currentNode.children.isEmpty()) {
-            // Mostrar el flujo válido.
-            for (Node node : currentFlow) {
+        if (nodoActual.children.isEmpty()) {
+            // Imprimir el camino actual.
+            for (Node node : caminoActual) {
                 System.out.print(node.getData() + "; ");
             }
             System.out.println();
         } else {
-            // Continuar la recursión para los nodos hijos.
-            for (Node child : currentNode.children) {
-                getValidFlows(grafo, child, new ArrayList<>(currentFlow));
+            for (Node hijo : nodoActual.children) {
+                getValidFlows(grafo, hijo, new ArrayList<>(caminoActual));
             }
         }
     }
 
     /**
-     * Agrega un nodo al grafo.
+     * Método para agregar un nodo al grafo.
      *
-     * @param node Nodo a agregar al grafo.
+     * @param node Nodo a agregar.
      */
     public void addNode(Node node) {
         nodes.add(node);
     }
 
     /**
-     * Agrega una conexión entre dos nodos en el grafo.
+     * Método para agregar una arista entre dos nodos.
      *
-     * @param node1 Nodo origen.
-     * @param node2 Nodo destino.
+     * @param node1 Nodo de origen.
+     * @param node2 Nodo de destino.
      */
     public void addEdge(Node node1, Node node2) {
         node1.addChild(node2);
     }
 
     /**
-     * Obtiene la raíz del grafo.
+     * Método para obtener el nodo raíz del grafo.
      *
-     * @return Nodo raíz del grafo.
+     * @return Nodo raíz.
      */
     public Node getRoot() {
         return root;
+    }
+
+    /**
+     * Método privado para imprimir el nodo raíz.
+     */
+    private void printRoot() {
+        System.out.println(root.getData());
+    }
+
+    /**
+     * Método privado para imprimir las constantes 'CONTS'.
+     */
+    private void printCONTS() {
+        // Crear un HashMap con S1:0, S2:0, S3:0, ..., Sn:0.
+        HashMap<String, Integer> conts = new HashMap<>();
+        for (String key : thaNodes.keySet()) {
+            conts.put(key, 0);
+        }
+
+        // Recorrer la matriz por columnas para obtener
+        for (int i = 0; i < adjacencyMatrix.size(); i++) {
+            for (int j = 0; j < adjacencyMatrix.size(); j++) {
+                if (adjacencyMatrix.get(i).get(j) == 1) {
+                    conts.put("S" + (j + 1), conts.getOrDefault("S" + (j + 1), 0) + 1);
+                }
+            }
+        }
+
+        // Imprimir las constantes 'CONTS' mayores a 1.
+        for (String key : conts.keySet()) {
+            if (conts.get(key) > 1)
+                System.out.println("CONTS-" + key + " := " + conts.get(key));
+        }
+    }
+
+    private int forkLabelCounter = 1;
+    private int joinLabelCounter = 1;
+
+    /**
+     * Método privado para generar una etiqueta de fork.
+     *
+     * @return Etiqueta generada.
+     */
+    private String generateForkLabel() {
+        return "L" + forkLabelCounter++;
+    }
+
+    /**
+     * Método privado para generar una etiqueta de join.
+     *
+     * @return Etiqueta generada.
+     */
+    private String generateJoinLabel() {
+        return "L" + joinLabelCounter++;
+    }
+
+    /**
+     * Método privado para generar el pseudocódigo del grafo.
+     *
+     * @param node        Nodo actual.
+     * @param indentation Cadena de indentación.
+     */
+    private void generatePseudocode(Node node, String indentation) {
+        if (!last.equals(node)) {
+            System.out.println(indentation + node.getData() + ";");
+        }
+
+        if (!node.children.isEmpty()) {
+            if (node.children.size() > 1) {
+                String forkLabel = generateForkLabel();
+                String joinLabel = generateJoinLabel();
+
+                System.out.println(indentation + "FORK " + forkLabel + ";");
+
+                for (int i = 0; i < node.children.size(); i++) {
+                    Node child = node.children.get(i);
+                    generatePseudocode(child, indentation + "  ");
+
+                    if (i < node.children.size() - 1) {
+                        System.out.println(indentation + "GOTO L" + joinLabelCounter + ";");
+                        System.out.println(indentation + forkLabel + ":");
+                    }
+                }
+            } else {
+                generatePseudocode(node.children.get(0), indentation);
+            }
+        }
+    }
+
+    /**
+     * Método privado para obtener los forks del grafo.
+     */
+    private void getFORKS() {
+        // Crear un HashMap con etiquetas L1, L2, ..., Ln.
+        int num = 1;
+        for (String key : thaNodes.keySet()) {
+            forks.put("L" + num, new ArrayList<Node>());
+            num++;
+        }
+
+        int forkNumber = 0;
+
+        // Recorrer la matriz por filas para obtener los hijos y actualizarlos en el HashMap.
+        for (int i = 0; i < adjacencyMatrix.size(); i++) {
+            int onesInRow = 0;
+
+            for (int j = 0; j < adjacencyMatrix.size(); j++) {
+                if (adjacencyMatrix.get(i).get(j) == 1) {
+                    forks.get("L" + (forkNumber + 1)).add(nodes.get(j));
+                    onesInRow++;
+                    if (onesInRow >= 2) {
+                        forkNumber++;
+                    }
+                }
+            }
+            onesInRow = 0;
+            if (i < adjacencyMatrix.size() - 1) {
+                forks.put("L" + (i + 1), forks.getOrDefault("L" + (i + 1), forks.get("L" + (i + 1))));
+            }
+        }
+    }
+
+    int h = 0;
+    int a = 0;
+
+    /**
+     * Método privado para imprimir los forks del grafo.
+     *
+     * @param node Nodo actual.
+     */
+    private void printFORKS(Node node) {
+        if (node.children.isEmpty()) {
+            return;
+        }
+
+        System.out.println(node.children.size());
+        System.out.println("L" + (h + 1));
+        if (node.children.size() > 1) {
+            String key = "L" + (h + 1);
+
+            if (forks.get(key) != null) {
+                System.out.println("FORK " + key);
+                System.out.println(forks.get(key).get(h).getData());
+            }
+        }
+        for (Node child : node.children) {
+            h++;
+            System.out.println(child.getData());
+            printFORKS(child);
+        }
+    }
+
+    /**
+     * Método público para crear el pseudocódigo del grafo.
+     */
+    public void createPseudocode() {
+        printCONTS();
+        System.out.println("CONT := " + root.children.size() + ";"); // Impresión única de CONT
+        generatePseudocode(root, "");
+        System.out.println("L" + joinLabelCounter + ":");
+        System.out.println(last.getData());
     }
 
     /**
@@ -234,13 +410,12 @@ public class PrecedenceGraph {
      */
     private class Node {
         String data;
-
         ArrayList<Node> children;
 
         /**
          * Constructor de la clase Node.
          *
-         * @param data Datos asociados al nodo.
+         * @param data Datos del nodo.
          */
         public Node(String data) {
             this.data = data;
@@ -248,7 +423,7 @@ public class PrecedenceGraph {
         }
 
         /**
-         * Agrega un nodo hijo al nodo actual.
+         * Método para agregar un nodo hijo.
          *
          * @param child Nodo hijo a agregar.
          */
@@ -267,7 +442,16 @@ public class PrecedenceGraph {
 
 
         /**
-         * Obtiene los datos asociados al nodo.
+         * Método para establecer los datos del nodo.
+         *
+         * @param data Datos del nodo.
+         */
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        /**
+         * Método para obtener los datos del nodo.
          *
          * @return Datos del nodo.
          */
