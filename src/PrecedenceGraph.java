@@ -13,7 +13,7 @@ public class PrecedenceGraph {
     // Listas y nodos para representar el grafo.
     private LinkedList<Node> nodes;
     private List<List<Integer>> adjacencyMatrix;
-    private List<Node> flows;
+    private ArrayList<Node> flows;
 
     // Nodo raíz del grafo.
     private Node root;
@@ -69,7 +69,6 @@ public class PrecedenceGraph {
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                // Parsear la línea para construir la matriz de adyacencia.
                 String[] characters = line.split(" ");
                 ArrayList<Integer> row = new ArrayList<>();
                 for (String character : characters) {
@@ -95,22 +94,22 @@ public class PrecedenceGraph {
      * Recursivamente encuentra y muestra los flujos válidos en el grafo.
      *
      * @param grafo       Objeto de tipo PrecedenceGraph que representa el grafo.
-     * @param nodoActual  Nodo actual durante la recursión.
-     * @param caminoActual Lista que representa el camino actual durante la recursión.
+     * @param currentNode  Nodo actual durante la recursión.
+     * @param currentFlow Lista que representa el camino actual durante la recursión.
      */
-    private void getValidFlows(PrecedenceGraph grafo, Node nodoActual, List<Node> caminoActual) {
-        caminoActual.add(nodoActual);
+    private void getValidFlows(PrecedenceGraph grafo, Node currentNode, ArrayList<Node> currentFlow) {
+        currentFlow.add(currentNode);
 
-        if (nodoActual.children.isEmpty()) {
+        if (currentNode.children.isEmpty()) {
             // Mostrar el flujo válido.
-            for (Node node : caminoActual) {
+            for (Node node : currentFlow) {
                 System.out.print(node.getData() + "; ");
             }
             System.out.println();
         } else {
             // Continuar la recursión para los nodos hijos.
-            for (Node hijo : nodoActual.children) {
-                getValidFlows(grafo, hijo, new ArrayList<>(caminoActual));
+            for (Node child : currentNode.children) {
+                getValidFlows(grafo, child, new ArrayList<>(currentFlow));
             }
         }
     }
