@@ -143,6 +143,44 @@ public class PrecedenceGraph {
     }
 
     /**
+     * Elimina la arista dirigida desde el nodo con datos 'data1' al nodo con datos 'data2' en el grafo.
+     *
+     * @param data1 Datos del nodo origen.
+     * @param data2 Datos del nodo destino.
+     * @return true si la operación fue exitosa, false si al menos uno de los nodos no existe en el grafo.
+     */
+    public boolean removeEdge(String data1, String data2) {
+        // Buscar los nodos correspondientes en el grafo.
+        Node node1 = findNodeByData(data1);
+        Node node2 = findNodeByData(data2);
+
+        // Verificar si ambos nodos existen en el grafo.
+        if (node1 != null && node2 != null) {
+            // Eliminar la arista dirigida desde node1 hacia node2.
+            node1.removeChild(node2);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Busca un nodo por sus datos en el grafo.
+     *
+     * @param data Datos del nodo a buscar.
+     * @return Nodo correspondiente o null si no se encuentra.
+     */
+    private Node findNodeByData(String data) {
+        // Iterar sobre los nodos para encontrar el que coincide con los datos proporcionados.
+        for (Node node : nodes) {
+            if (node.getData().equals(data)) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Clase interna que representa un nodo en el grafo.
      */
     private class Node {
@@ -168,6 +206,16 @@ public class PrecedenceGraph {
         public void addChild(Node child) {
             children.add(child);
         }
+
+        /**
+         * Elimina el nodo proporcionado de la lista de nodos hijos del nodo actual.
+         *
+         * @param child Nodo hijo a eliminar.
+         */
+        public void removeChild(Node child) {
+            children.remove(child);
+        }
+
 
         /**
          * Obtiene los datos asociados al nodo.
