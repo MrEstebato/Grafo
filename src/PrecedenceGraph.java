@@ -143,13 +143,62 @@ public class PrecedenceGraph {
     }
 
     /**
+     * Elimina el nodo con los datos proporcionados del grafo, manteniendo la estructura del grafo.
+     *
+     * @param nodedata Datos del nodo a eliminar.
+     */
+    public void deleteNode(String nodedata) {
+        // Verificar si el nodo a eliminar es la raíz; en ese caso, no se realiza ninguna operación.
+        if (root.getData().equals(nodedata)) {
+            return;
+        }
+
+        // Llamar al método de eliminación recursiva para buscar y eliminar el nodo.
+        deleteNodeRec(nodedata, root);
+    }
+
+    /**
+     * Método auxiliar para la eliminación recursiva de un nodo del grafo.
+     *
+     * @param nodedata Datos del nodo a eliminar.
+     * @param father Nodo padre del cual se eliminará el nodo hijo.
+     */
+    private void deleteNodeRec(String nodedata, Node father) {
+        // Obtener la lista de hijos del nodo padre.
+        ArrayList<Node> children = father.children;
+
+        // Iterar sobre los hijos para buscar el nodo a eliminar.
+        for (int i = 0; i < children.size(); i++) {
+            Node child = children.get(i);
+
+            // Verificar si el nodo actual tiene los datos que se quieren eliminar.
+            if (child.getData().equals(nodedata)) {
+                // Crear una copia de los hijos del nodo a eliminar.
+                ArrayList<Node> tempchildren = new ArrayList<>(child.children);
+                // Eliminar el nodo actual de la lista de hijos del padre.
+                children.remove(i);
+
+                // Agregar los hijos del nodo eliminado como nietos del padre.
+                for (Node grandChild : tempchildren) {
+                    father.addChild(grandChild);
+                }
+                return;
+            } else {
+                // Llamar recursivamente al método para continuar la búsqueda en los nodos hijos.
+                deleteNodeRec(nodedata, child);
+            }
+        }
+    }
+
+
+    /**
      * Elimina la arista dirigida desde el nodo con datos 'data1' al nodo con datos 'data2' en el grafo.
      *
      * @param data1 Datos del nodo origen.
      * @param data2 Datos del nodo destino.
      * @return true si la operación fue exitosa, false si al menos uno de los nodos no existe en el grafo.
      */
-    public boolean removeEdge(String data1, String data2) {
+    public boolean deleteEdge(String data1, String data2) {
         // Buscar los nodos correspondientes en el grafo.
         Node node1 = findNodeByData(data1);
         Node node2 = findNodeByData(data2);
