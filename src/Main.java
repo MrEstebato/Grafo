@@ -1,9 +1,9 @@
 public class Main {
     public static void main(String[] args) {
-        precedenceGraph grafo = new precedenceGraph("src/Grafo.txt");
-        precedenceGraph grafo2 = new precedenceGraph("src/Grafo2.txt");
-        precedenceGraph grafo3 = new precedenceGraph("src/Grafo3.txt");
-        precedenceGraph grafo4 = new precedenceGraph("src/Grafo4.txt");
+        PrecedenceGraph grafo = new PrecedenceGraph("src/Grafo.txt");
+        PrecedenceGraph grafo2 = new PrecedenceGraph("src/Grafo2.txt");
+        PrecedenceGraph grafo3 = new PrecedenceGraph("src/Grafo3.txt");
+        PrecedenceGraph grafo4 = new PrecedenceGraph("src/Grafo4.txt");
         grafo.showValidFlows();
         System.out.println();
         grafo2.showValidFlows();
