@@ -15,7 +15,6 @@ public class PrecedenceGraph {
     private List<Node> flows;
     private Node root;
     private Node last;
-    private HashMap<String, ArrayList<Node>> forks = new HashMap<>();
     private HashMap<String, Node> thaNodes;
 
     /**
@@ -82,7 +81,7 @@ public class PrecedenceGraph {
      */
     private void graphReader(String filePath) {
         try (FileReader fileReader = new FileReader(filePath);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+                BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] characters = line.split(" ");
@@ -245,86 +244,25 @@ public class PrecedenceGraph {
     }
 
     /**
-     * Método privado para obtener los forks del grafo.
-     */
-    private void getFORKS() {
-        // Crear un HashMap con etiquetas L1, L2, ..., Ln.
-        int num = 1;
-        for (String key : thaNodes.keySet()) {
-            forks.put("L" + num, new ArrayList<Node>());
-            num++;
-        }
-
-        int forkNumber = 0;
-
-        // Recorrer la matriz por filas para obtener los hijos y actualizarlos en el HashMap.
-        for (int i = 0; i < adjacencyMatrix.size(); i++) {
-            int onesInRow = 0;
-
-            for (int j = 0; j < adjacencyMatrix.size(); j++) {
-                if (adjacencyMatrix.get(i).get(j) == 1) {
-                    forks.get("L" + (forkNumber + 1)).add(nodes.get(j));
-                    onesInRow++;
-                    if (onesInRow >= 2) {
-                        forkNumber++;
-                    }
-                }
-            }
-            onesInRow = 0;
-            if (i < adjacencyMatrix.size() - 1) {
-                forks.put("L" + (i + 1), forks.getOrDefault("L" + (i + 1), forks.get("L" + (i + 1))));
-            }
-        }
-    }
-
-    int h = 0;
-    int a = 0;
-
-    /**
-     * Método privado para imprimir los forks del grafo.
-     *
-     * @param node Nodo actual.
-     */
-    private void printFORKS(Node node) {
-        if (node.children.isEmpty()) {
-            return;
-        }
-
-        System.out.println(node.children.size());
-        System.out.println("L" + (h + 1));
-        if (node.children.size() > 1) {
-            String key = "L" + (h + 1);
-
-            if (forks.get(key) != null) {
-                System.out.println("FORK " + key);
-                System.out.println(forks.get(key).get(h).getData());
-            }
-        }
-        for (Node child : node.children) {
-            h++;
-            System.out.println(child.getData());
-            printFORKS(child);
-        }
-    }
-
-    /**
      * Método público para crear el pseudocódigo del grafo.
      */
     public void createPseudocode() {
         printCONTS();
-        System.out.println("CONT := " + root.children.size() + ";"); // Impresión única de CONT
         generatePseudocode(root, "");
         System.out.println("L" + joinLabelCounter + ":");
+        System.out.println("JOINT CONT;");
         System.out.println(last.getData());
     }
 
     /**
-     * Elimina el nodo con los datos proporcionados del grafo, manteniendo la estructura del grafo.
+     * Elimina el nodo con los datos proporcionados del grafo, manteniendo la
+     * estructura del grafo.
      *
      * @param nodedata Datos del nodo a eliminar.
      */
     public void deleteNode(String nodedata) {
-        // Verificar si el nodo a eliminar es la raíz; en ese caso, no se realiza ninguna operación.
+        // Verificar si el nodo a eliminar es la raíz; en ese caso, no se realiza
+        // ninguna operación.
         if (root.getData().equals(nodedata)) {
             return;
         }
@@ -337,7 +275,7 @@ public class PrecedenceGraph {
      * Método auxiliar para la eliminación recursiva de un nodo del grafo.
      *
      * @param nodedata Datos del nodo a eliminar.
-     * @param father Nodo padre del cual se eliminará el nodo hijo.
+     * @param father   Nodo padre del cual se eliminará el nodo hijo.
      */
     private void deleteNodeRec(String nodedata, Node father) {
         // Obtener la lista de hijos del nodo padre.
@@ -360,19 +298,21 @@ public class PrecedenceGraph {
                 }
                 return;
             } else {
-                // Llamar recursivamente al método para continuar la búsqueda en los nodos hijos.
+                // Llamar recursivamente al método para continuar la búsqueda en los nodos
+                // hijos.
                 deleteNodeRec(nodedata, child);
             }
         }
     }
 
-
     /**
-     * Elimina la arista dirigida desde el nodo con datos 'data1' al nodo con datos 'data2' en el grafo.
+     * Elimina la arista dirigida desde el nodo con datos 'data1' al nodo con datos
+     * 'data2' en el grafo.
      *
      * @param data1 Datos del nodo origen.
      * @param data2 Datos del nodo destino.
-     * @return true si la operación fue exitosa, false si al menos uno de los nodos no existe en el grafo.
+     * @return true si la operación fue exitosa, false si al menos uno de los nodos
+     *         no existe en el grafo.
      */
     public boolean deleteEdge(String data1, String data2) {
         // Buscar los nodos correspondientes en el grafo.
@@ -396,7 +336,8 @@ public class PrecedenceGraph {
      * @return Nodo correspondiente o null si no se encuentra.
      */
     private Node findNodeByData(String data) {
-        // Iterar sobre los nodos para encontrar el que coincide con los datos proporcionados.
+        // Iterar sobre los nodos para encontrar el que coincide con los datos
+        // proporcionados.
         for (Node node : nodes) {
             if (node.getData().equals(data)) {
                 return node;
@@ -439,7 +380,6 @@ public class PrecedenceGraph {
         public void removeChild(Node child) {
             children.remove(child);
         }
-
 
         /**
          * Método para establecer los datos del nodo.
